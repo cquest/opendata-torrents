@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+     <channel>
+        <atom:link href="http://212.47.238.202/torrents/meteo-france/arpege/" rel="self" type="application/rss+xml" />
+        <title>Données du modèle ARPEGE de Météo-France (Licence Ouverte)</title>
+        <link>http://212.47.238.202/torrents/meteo-france/arpege/</link>
+        <description>Rediffusion EXPERIMENTALE des données opendata via protocole BitTorrent</description>
+        <language>fr-fr</language>
+        <generator>homemade handcrafted bash script</generator>
