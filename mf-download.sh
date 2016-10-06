@@ -18,7 +18,6 @@ for p in SP1 SP2 HP1 HP2; do
   err=$?
   if [ "$err" = "0" ]; then
   transmission-create -t http://212.47.238.202:6969/announce $f
-
   transmission-remote -n "$TRANSMISSION_AUTH" -a $f.torrent
   chmod a+r $f.torrent
   mv $f.torrent /var/www/html/torrents/meteo-france/arpege
@@ -48,10 +47,6 @@ for e in 00H 01H 02H 03H 04H 05H 06H 07H 08H 09H 10H 11H 12H 13H 14H 15H 16H 17H
   err=$?
   if [ "$err" = "0" ]; then
   transmission-create -t http://212.47.238.202:6969/announce $f
-   # -t udp://tracker.opentrackr.org:1337
-   # -t http://tracker.openbittorrent.com:80/announce
-   # -t udp://tracker.openbittorrent.com:80/announce
-
   transmission-remote -n "$TRANSMISSION_AUTH" -a $f.torrent
   chmod a+r $f.torrent
   mv $f.torrent /var/www/html/torrents/meteo-france/arome
