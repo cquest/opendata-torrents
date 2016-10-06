@@ -18,9 +18,6 @@ for p in SP1 SP2 HP1 HP2; do
   err=$?
   if [ "$err" = "0" ]; then
   transmission-create -t http://212.47.238.202:6969/announce $f
-   # -t udp://tracker.opentrackr.org:1337
-   # -t http://tracker.openbittorrent.com:80/announce
-   # -t udp://tracker.openbittorrent.com:80/announce
 
   transmission-remote -n "$TRANSMISSION_AUTH" -a $f.torrent
   chmod a+r $f.torrent
