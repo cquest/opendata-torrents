@@ -11,16 +11,24 @@ dd=`date +'%Y%m%d'`
 # ARPEGE
 for h in 00 06 12 18; do
 for r in 00H12H 13H24H 25H36H 37H48H 49H60H 61H72H 73H84H 85H96H; do
-for p in SP1 SP2 HP1 HP2; do
+for p in SP1 SP2; do
   f=mf-arpege-$d$h-$r-$p.grib2
   wget -nc -q -t 10 -c --retry-connrefused \
   "http://dcpc-nwp.meteo.fr/services/PS_GetCache_DCPCPreviNum?token=__5yLVTdr-sGeHoPitnFc7TZ6MhBcJxuSsoZp6y0leVHU__&model=ARPEGE&grid=0.1&package=$p&time=$r&referencetime=$d$h:00:00Z&format=grib2" -O $f
   err=$?
   if [ "$err" = "0" ]; then
-  transmission-create -t http://212.47.238.202:6969/announce $f
-  transmission-remote -n "$TRANSMISSION_AUTH" -a $f.torrent
-  chmod a+r $f.torrent
-  mv $f.torrent /var/www/html/torrents/meteo-france/arpege
+#    SIZE=$(du -sb $f | awk '{ print $1 }')
+#    if ((SIZE<500)) ; then
+    # on test la validité du fichier grib reçu à l'aide de gdal
+    gdalinfo $f > /dev/null
+    if [ "$?" = "0" ]; then
+      rm $f
+    else
+      transmission-create -t http://212.47.238.202:6969/announce $f
+      transmission-remote -n "$TRANSMISSION_AUTH" -a $f.torrent
+      chmod a+r $f.torrent
+      mv $f.torrent /var/www/html/torrents/meteo-france/arpege
+    fi
   elif [ "$err" = "1" ]; then
     sleep 0
   else
@@ -47,6 +55,10 @@ for e in 00H 01H 02H 03H 04H 05H 06H 07H 08H 09H 10H 11H 12H 13H 14H 15H 16H 17H
   err=$?
   if [ "$err" = "0" ]; then
   transmission-create -t http://212.47.238.202:6969/announce $f
+   # -t udp://tracker.opentrackr.org:1337
+   # -t http://tracker.openbittorrent.com:80/announce
+   # -t udp://tracker.openbittorrent.com:80/announce
+
   transmission-remote -n "$TRANSMISSION_AUTH" -a $f.torrent
   chmod a+r $f.torrent
   mv $f.torrent /var/www/html/torrents/meteo-france/arome
