@@ -17,17 +17,26 @@ for p in SP1 SP2; do
   "http://dcpc-nwp.meteo.fr/services/PS_GetCache_DCPCPreviNum?token=__5yLVTdr-sGeHoPitnFc7TZ6MhBcJxuSsoZp6y0leVHU__&model=ARPEGE&grid=0.1&package=$p&time=$r&referencetime=$d$h:00:00Z&format=grib2" -O $f
   err=$?
   if [ "$err" = "0" ]; then
-#    SIZE=$(du -sb $f | awk '{ print $1 }')
-#    if ((SIZE<500)) ; then
-    # on test la validité du fichier grib reçu à l'aide de gdal
-    gdalinfo $f > /dev/null
-    if [ "$?" = "0" ]; then
+    SIZE=$(du -sb $f | awk '{ print $1 }')
+    if ((SIZE<500)) ; then
       rm $f
     else
-      transmission-create -t http://212.47.238.202:6969/announce $f
-      transmission-remote -n "$TRANSMISSION_AUTH" -a $f.torrent
-      chmod a+r $f.torrent
-      mv $f.torrent /var/www/html/torrents/meteo-france/arpege
+      # on test la validité du fichier grib reçu à l'aide de gdal
+      gdalinfo $f > /dev/null; err=$?
+      if [ "$err" = "1" ]; then
+        # fichier invalide, on le supprime
+        rm $f
+      else
+        # création du torrent
+        transmission-create -t http://212.47.238.202:6969/announce $f
+        # publication du torrent
+        transmission-remote -n "$TRANSMISSION_AUTH" -a $f.torrent
+        chmod a+r $f.torrent
+        # mise à disposition sur le site web
+        mv $f.torrent /var/www/html/torrents/meteo-france/arpege
+        # mise à jour du flux RSS
+        ./rss.sh torrents/meteo-france/arpege > /var/www/html/torrents/meteo-france/arpege/rss.xml "Météo-France" rss-arpege.xml
+      fi
     fi
   elif [ "$err" = "1" ]; then
     sleep 0
